@@ -1,0 +1,121 @@
+##
+## EPITECH PROJECT, 2026
+## Corewar
+## File description:
+## Makefile for Corewar VM
+##
+
+MAKEFLAGS += --no-print-directory
+
+CC      =   epiclang
+
+PROJECT =   COREWAR
+NAME    =   corewar
+LIB_NAME =  libmy.a
+
+# 2. SOURCES (Minimal pour valider la CI)
+SRC     =   src/main.c
+
+LIB_SRC =   
+
+# 3. OBJETS
+TESTS_SRC = tests/unit_tests.c
+OBJ     =   $(SRC:.c=.o)
+LIB_OBJ =   $(LIB_SRC:.c=.o)
+
+# 4. FLAGS
+CFLAGS  =   -I./include -Wall -Wextra -g
+# Rajoute -lmy ici plus tard :
+LDFLAGS =   -L. 
+TESTS_FLAGS = --coverage -lcriterion
+
+# ─── Macro: Fancy Header ─────────────────────────────────────────────────
+define pretty_header
+	@echo "$(BOLD)$(H_PURPLE)╔═══════════════════════════════════════════════════════════════╗$(END)"
+	@echo "$(BOLD)$(H_PURPLE)║$(END)$(BOLD)$(WHITE)$(1)$(END)"
+	@echo "$(BOLD)$(H_PURPLE)╚═══════════════════════════════════════════════════════════════╝$(END)"
+endef
+
+# ─── Pattern Rules (Esthétique de compilation) ───────────────────────────
+%.o: %.c
+	@printf "$(H_BLUE)⚡ $(BOLD)Compiling:$(END) $(H_YELLOW)%-45s$(END) $(H_GREEN)[OK]$(END)\r" $<
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+# ─── Rules ───────────────────────────────────────────────────────────────
+.PHONY: all clean fclean re tests_run coverage help banner setup
+
+# Enlève $(LIB_NAME) de la règle 'all' temporairement
+all: banner $(NAME)
+
+$(NAME): $(OBJ)
+	@printf "\n"
+	$(call pretty_header, 🚀 Linking binary : $(NAME) 🚀)
+	@$(CC) -o $(NAME) $(OBJ) $(LDFLAGS)
+	@echo "$(BOLD)$(H_GREEN)✅ $(PROJECT) successfully compiled!$(END)"
+
+$(LIB_NAME): $(LIB_OBJ)
+	@printf "\n"
+	$(call pretty_header, 📚 Creating library : $(LIB_NAME) 📚)
+	@ar rc $(LIB_NAME) $(LIB_OBJ)
+	@mkdir -p lib/my
+	@cp $(LIB_NAME) lib/my/
+	@echo "$(BOLD)$(H_GREEN)✅ Library compiled!$(END)"
+
+banner:
+	@echo "$(H_CYAN)                                                              $(END)"
+	@echo "$(H_CYAN)   ██████╗ ██████╗ ██████╗ ███████╗██╗    ██╗ █████╗ ██████╗  $(END)"
+	@echo "$(H_CYAN)  ██╔════╝██╔═══██╗██╔══██╗██╔════╝██║    ██║██╔══██╗██╔══██╗ $(END)"
+	@echo "$(H_CYAN)  ██║     ██║   ██║██████╔╝█████╗  ██║ █╗ ██║███████║██████╔╝ $(END)"
+	@echo "$(H_CYAN)  ██║     ██║   ██║██╔══██╗██╔══╝  ██║███╗██║██╔══██║██╔══██╗ $(END)"
+	@echo "$(H_CYAN)  ╚██████╗╚██████╔╝██║  ██║███████╗╚███╔███╔╝██║  ██║██║  ██║ $(END)"
+	@echo "$(H_CYAN)   ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝ ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝ $(END)"
+	@echo "$(H_CYAN)                                                              $(END)"
+
+clean:
+	$(call pretty_header, 🧹 Cleaning object files 🧹)
+	@rm -f $(OBJ)
+	@rm -f $(LIB_OBJ)
+	@rm -f *.gcno *.gcda
+	@rm -f vgcore.*
+	@rm -f *~
+
+fclean: clean
+	$(call pretty_header, 🗑️ Full clean: objects binary tests 🗑️)
+	@rm -f $(NAME)
+	@rm -f $(LIB_NAME)
+	@rm -f lib/my/$(LIB_NAME)
+	@rm -f unit_tests
+	@rm -f coverage.html
+
+re: fclean all
+
+# ─── Tests Rules ─────────────────────────────────────────────────────────
+# On force GCC pour éviter les bugs llvm-cov de la moulinette
+tests_run: fclean
+	$(call pretty_header, 🧪 Compiling and running unit tests 🧪)
+	@gcc -o unit_tests $(filter-out src/main.c, $(SRC)) $(TESTS_SRC) $(CFLAGS) $(LDFLAGS) $(TESTS_FLAGS)
+	@./unit_tests
+	@gcovr --exclude tests/
+	@gcovr --txt-metric branch --exclude tests/
+
+coverage: tests_run
+	@gcovr --html-details -o coverage.html --exclude tests/
+	@xdg-open coverage.html || echo "Coverage generated in coverage.html"
+
+# ─── Setup ───────────────────────────────────────────────────────────────
+setup:
+	@mkdir -p .githooks
+	@git config core.hooksPath .githooks
+	@echo "$(BOLD)$(H_GREEN) Git hooks configurés !$(END)"
+
+# ─── Styles & Colors ─────────────────────────────────────────────────────
+END = \033[0m
+BOLD = \033[1m
+H_GREEN = \033[92m
+H_YELLOW = \033[93m
+H_BLUE = \033[94m
+H_PURPLE = \033[95m
+H_CYAN = \033[96m
+WHITE = \033[37m
+CYAN = \033[36m
+YELLOW = \033[33m
