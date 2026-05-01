@@ -13,8 +13,10 @@ PROJECT =   COREWAR
 NAME    =   corewar
 LIB_NAME =  libmy.a
 
-# 2. SOURCES (Minimal pour valider la CI)
-SRC     =   src/main.c
+# 2. SOURCES
+SRC     =   src/main.c \
+			src/endian.c \
+			src/champion.c
 
 LIB_SRC =   
 
@@ -25,7 +27,6 @@ LIB_OBJ =   $(LIB_SRC:.c=.o)
 
 # 4. FLAGS
 CFLAGS  =   -I./include -Wall -Wextra -g
-# Rajoute -lmy ici plus tard :
 LDFLAGS =   -L. 
 TESTS_FLAGS = --coverage -lcriterion
 
@@ -44,7 +45,6 @@ endef
 # ─── Rules ───────────────────────────────────────────────────────────────
 .PHONY: all clean fclean re tests_run coverage help banner setup
 
-# Enlève $(LIB_NAME) de la règle 'all' temporairement
 all: banner $(NAME)
 
 $(NAME): $(OBJ)
@@ -90,7 +90,6 @@ fclean: clean
 re: fclean all
 
 # ─── Tests Rules ─────────────────────────────────────────────────────────
-# On force GCC pour éviter les bugs llvm-cov de la moulinette
 tests_run: fclean
 	$(call pretty_header, 🧪 Compiling and running unit tests 🧪)
 	@gcc -o unit_tests $(filter-out src/main.c, $(SRC)) $(TESTS_SRC) $(CFLAGS) $(LDFLAGS) $(TESTS_FLAGS)
