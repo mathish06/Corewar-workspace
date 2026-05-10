@@ -14,9 +14,9 @@ NAME    =   corewar
 LIB_NAME =  libmy.a
 
 # 2. SOURCES
-SRC     =   main.c 				\
-			src/endian.c 		\
-			src/champion.c
+SRC     =   main.c 					\
+			src/champ/endian.c 		\
+			src/champ/champion.c
 
 LIB_SRC =   lib/my/my_strcmp.c
 
