@@ -14,11 +14,11 @@ NAME    =   corewar
 LIB_NAME =  libmy.a
 
 # 2. SOURCES
-SRC     =   src/main.c \
-			src/endian.c \
+SRC     =   main.c 				\
+			src/endian.c 		\
 			src/champion.c
 
-LIB_SRC =   
+LIB_SRC =   lib/my/my_strcmp.c
 
 # 3. OBJETS
 TESTS_SRC = tests/unit_tests.c
