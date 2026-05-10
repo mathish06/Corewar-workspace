@@ -48,6 +48,20 @@ static int handle_a_flag(char **argv, int *i, int *temp_a)
     return 0;
 }
 
+static int handle_champion(char *filepath, global_t *global,
+    int *temp_n, int *temp_a)
+{
+    if (global->nbr_champions >= MAX_ARGS_NUMBER)
+        return 84;
+    global->champions[global->nbr_champions].filepath = filepath;
+    global->champions[global->nbr_champions].flag_n = *temp_n;
+    global->champions[global->nbr_champions].flag_a = *temp_a;
+    *temp_n = -1;
+    *temp_a = -1;
+    global->nbr_champions++;
+    return 0;
+}
+
 int corewar(int argc, char **argv)
 {
     global_t global;
