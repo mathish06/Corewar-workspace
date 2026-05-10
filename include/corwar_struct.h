@@ -8,15 +8,20 @@
 #ifndef COREWAR_STRUCT_H_
     #define COREWAR_STRUCT_H_
 
-typedef struct global_s {
-    int dump;
-    struct champ_s *champ_list;
-} global_t;
-
-typedef struct champ_s {
+typedef struct champion_s {
+    header_t header;
+    uint8_t *code;
+    int load_address;
+    int prog_number;
     int flag_n;
     int flag_a;
-    struct champ_s *next;
-} champ_t;
+    char *filepath;
+} champion_t;
+
+typedef struct global_s {
+    int dump;
+    champion_t champions[MAX_ARGS_NUMBER];
+    int nbr_champions;
+} global_t;
 
 #endif
