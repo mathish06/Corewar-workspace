@@ -17,7 +17,8 @@ LIB_NAME =  libmy.a
 SRC     =   main.c 					\
 			src/champ/endian.c 		\
 			src/champ/champion.c	\
-			src/core/corewar.c
+			src/core/corewar.c		\
+			src/tools/tools.c
 
 LIB_SRC =   lib/my/my_strcmp.c		\
 			lib/my/my_getnbr.c
@@ -29,7 +30,7 @@ LIB_OBJ =   $(LIB_SRC:.c=.o)
 
 # 4. FLAGS
 CFLAGS  =   -I./include -Wall -Wextra -g
-LDFLAGS =   -L. 
+LDFLAGS =   -L. -lmy
 TESTS_FLAGS = --coverage -lcriterion
 
 # ─── Macro: Fancy Header ─────────────────────────────────────────────────
@@ -49,7 +50,7 @@ endef
 
 all: banner $(NAME)
 
-$(NAME): $(OBJ)
+$(NAME): $(LIB_NAME) $(OBJ)
 	@printf "\n"
 	$(call pretty_header, 🚀 Linking binary : $(NAME) 🚀)
 	@$(CC) -o $(NAME) $(OBJ) $(LDFLAGS)
