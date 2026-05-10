@@ -14,11 +14,14 @@ NAME    =   corewar
 LIB_NAME =  libmy.a
 
 # 2. SOURCES
-SRC     =   src/main.c \
-			src/endian.c \
-			src/champion.c
+SRC     =   main.c 					\
+			src/champ/endian.c 		\
+			src/champ/champion.c	\
+			src/core/corewar.c		\
+			src/tools/tools.c
 
-LIB_SRC =   
+LIB_SRC =   lib/my/my_strcmp.c		\
+			lib/my/my_getnbr.c
 
 # 3. OBJETS
 TESTS_SRC = tests/unit_tests.c
@@ -27,7 +30,7 @@ LIB_OBJ =   $(LIB_SRC:.c=.o)
 
 # 4. FLAGS
 CFLAGS  =   -I./include -Wall -Wextra -g
-LDFLAGS =   -L. 
+LDFLAGS =   -L. -lmy
 TESTS_FLAGS = --coverage -lcriterion
 
 # ─── Macro: Fancy Header ─────────────────────────────────────────────────
@@ -47,7 +50,7 @@ endef
 
 all: banner $(NAME)
 
-$(NAME): $(OBJ)
+$(NAME): $(LIB_NAME) $(OBJ)
 	@printf "\n"
 	$(call pretty_header, 🚀 Linking binary : $(NAME) 🚀)
 	@$(CC) -o $(NAME) $(OBJ) $(LDFLAGS)
@@ -90,9 +93,9 @@ fclean: clean
 re: fclean all
 
 # ─── Tests Rules ─────────────────────────────────────────────────────────
-tests_run: fclean
+tests_run: fclean $(LIB_NAME)
 	$(call pretty_header, 🧪 Compiling and running unit tests 🧪)
-	@gcc -o unit_tests $(filter-out src/main.c, $(SRC)) $(TESTS_SRC) $(CFLAGS) $(LDFLAGS) $(TESTS_FLAGS)
+	@gcc -o unit_tests $(filter-out main.c, $(SRC)) $(TESTS_SRC) $(CFLAGS) $(LDFLAGS) $(TESTS_FLAGS)
 	@./unit_tests
 	@gcovr --exclude tests/
 	@gcovr --txt-metric branch --exclude tests/
