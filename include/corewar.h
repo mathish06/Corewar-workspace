@@ -14,8 +14,15 @@
     #include <unistd.h>
     #include <fcntl.h>
     #include <stdint.h>
+    #include <./corwar_struct.h>
 
 int load_champion_header(const char *filepath);
 int swap_int32(int val);
+
+int my_str_isnum(char *str);
+
+
+
+int my_strcmp(char const *s1, char const *s2);
 
 #endif
