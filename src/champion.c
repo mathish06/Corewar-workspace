@@ -7,11 +7,11 @@
 
 #include "../include/corewar.h"
 
-static void print_champion_info(const header_t *h)
+static void print_champion_info(const champion_t *c)
 {
     printf("Champion '%s' loaded successfully! (Size: %d bytes)\n",
-        h->prog_name, h->prog_size);
-    printf("Comment: %s\n", h->comment);
+        c->header.prog_name, c->header.prog_size);
+    printf("Comment: %s\n", c->header.comment);
 }
 
 static int read_and_validate_header(FILE *fd,
@@ -35,20 +35,69 @@ static int read_and_validate_header(FILE *fd,
     return 0;
 }
 
-int load_champion_header(const char *filepath)
+static int check_trailing_bytes(FILE *fd, const char *filepath)
+{
+    uint8_t dummy;
+
+    if (fread(&dummy, 1, 1, fd) > 0) {
+        fprintf(stderr, "Error: File %s contains trailing superfluous bytes.\n",
+            filepath);
+        return 84;
+    }
+    return 0;
+}
+
+static int read_payload(FILE *fd, champion_t *champ, const char *filepath)
+{
+    size_t read_bytes;
+
+    if (champ->header.prog_size == 0) {
+        champ->code = NULL;
+        return 0;
+    }
+    champ->code = malloc(sizeof(uint8_t) * champ->header.prog_size);
+    if (champ->code == NULL) {
+        perror("Error: malloc failed");
+        return 84;
+    }
+    read_bytes = fread(champ->code, 1, champ->header.prog_size, fd);
+    if (read_bytes != (size_t)champ->header.prog_size) {
+        fprintf(stderr, "Error: File %s is truncated.\n", filepath);
+        return 84;
+    }
+    if (check_trailing_bytes(fd, filepath) != 0) {
+        return 84;
+    }
+    return 0;
+}
+
+void free_champion(champion_t *champ)
+{
+    if (champ != NULL && champ->code != NULL) {
+        free(champ->code);
+        champ->code = NULL;
+    }
+}
+
+int load_champion(champion_t *champ, const char *filepath)
 {
     FILE *fd = fopen(filepath, "r");
-    header_t header;
 
     if (fd == NULL) {
         fprintf(stderr, "Error: Cannot open file %s\n", filepath);
         return 84;
     }
-    if (read_and_validate_header(fd, &header, filepath) != 0) {
+    champ->code = NULL;
+    if (read_and_validate_header(fd, &champ->header, filepath) != 0) {
         fclose(fd);
         return 84;
     }
-    print_champion_info(&header);
+    if (read_payload(fd, champ, filepath) != 0) {
+        free_champion(champ);
+        fclose(fd);
+        return 84;
+    }
+    print_champion_info(champ);
     fclose(fd);
     return 0;
 }
