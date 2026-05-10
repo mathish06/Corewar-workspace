@@ -62,6 +62,18 @@ static int handle_champion(char *filepath, global_t *global,
     return 0;
 }
 
+static int parse_single_arg(char **argv, int *i, global_t *global,
+    int *temp_n, int *temp_a)
+{
+    if (my_strcmp("-dump", argv[*i]) == 0)
+        return handle_dump(argv, i, global);
+    if (my_strcmp("-n", argv[*i]) == 0)
+        return handle_n_flag(argv, i, temp_n);
+    if (my_strcmp("-a", argv[*i]) == 0)
+        return handle_a_flag(argv, i, temp_a);
+    return handle_champion(argv[*i], global, temp_n, temp_a);
+}
+
 int corewar(int argc, char **argv)
 {
     global_t global;
@@ -71,6 +83,10 @@ int corewar(int argc, char **argv)
     global.dump = -1;
     global.nbr_champions = 0;
     for (int i = 1; i < argc; i++) {
-        
+        if (parse_single_arg(argv, &i, &global, &temp_n, &temp_a) == 84)
+            return 84;
     }
+    if (global.nbr_champions == 0)
+        return 84;
+    return 0;
 }
