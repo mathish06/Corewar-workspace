@@ -16,7 +16,8 @@ LIB_NAME =  libmy.a
 # 2. SOURCES
 SRC     =   src/main.c \
 			src/endian.c \
-			src/champion.c
+			src/champion.c \
+			src/arena.c
 
 LIB_SRC =   
 
