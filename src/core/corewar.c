@@ -34,6 +34,20 @@ static int handle_n_flag(char **argv, int *i, int *temp_n)
     return 0;
 }
 
+static int handle_a_flag(char **argv, int *i, int *temp_a)
+{
+    int nbr;
+
+    if (argv[*i + 1] == NULL)
+        return 84;
+    if (my_str_isnum(argv[*i + 1]) == 0)
+        return 84;
+    nbr = my_getnbr(argv[*i + 1]);
+    *temp_a = nbr;
+    (*i)++;
+    return 0;
+}
+
 int corewar(int argc, char **argv)
 {
     global_t global;
