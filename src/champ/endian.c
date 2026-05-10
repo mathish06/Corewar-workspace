@@ -5,7 +5,7 @@
 ** Endianness swap utility for corewar
 */
 
-#include "../include/corewar.h"
+#include "../../include/corewar.h"
 
 int swap_int32(int val)
 {
