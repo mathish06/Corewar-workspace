@@ -22,6 +22,8 @@ typedef struct global_s {
     int dump;
     champion_t champions[MAX_ARGS_NUMBER];
     int nbr_champions;
+    int temp_n;
+    int temp_a;
 } global_t;
 
 #endif
