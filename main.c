@@ -5,7 +5,7 @@
 ** Main entry
 */
 
-#include "../include/corewar.h"
+#include "./include/corewar.h"
 
 int main(int argc, char **argv)
 {
