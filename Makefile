@@ -16,9 +16,11 @@ LIB_NAME =  libmy.a
 # 2. SOURCES
 SRC     =   main.c 					\
 			src/champ/endian.c 		\
-			src/champ/champion.c
+			src/champ/champion.c	\
+			src/core/corewar.c
 
-LIB_SRC =   lib/my/my_strcmp.c
+LIB_SRC =   lib/my/my_strcmp.c		\
+			lib/my/my_getnbr.c
 
 # 3. OBJETS
 TESTS_SRC = tests/unit_tests.c
