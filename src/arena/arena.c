@@ -5,7 +5,7 @@
 ** Arena initialization and dump
 */
 
-#include "../include/corewar.h"
+#include "../../include/corewar.h"
 
 void init_vm(vm_t *vm)
 {
