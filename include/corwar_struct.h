@@ -26,8 +26,16 @@ typedef struct global_s {
     int temp_a;
 } global_t;
 
+typedef struct process_s {
+    int pc;                     
+    int carry;                  
+    int registers[REG_NUMBER];  
+    struct process_s *next;     
+} process_t;
+
 typedef struct vm_s {
     uint8_t arena[MEM_SIZE];
+    process_t *process_list;
 } vm_t;
 
 #endif
