@@ -5,7 +5,7 @@
 ** Champion parsing and validation
 */
 
-#include "../include/corewar.h"
+#include "../../include/corewar.h"
 
 static void print_champion_info(const champion_t *c)
 {

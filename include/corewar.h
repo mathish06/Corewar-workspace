@@ -23,6 +23,7 @@ typedef struct champion_s {
     int load_address;
     int prog_number;
 } champion_t;
+    #include <./corwar_struct.h>
 
 typedef struct vm_s {
     uint8_t arena[MEM_SIZE];
@@ -34,5 +35,12 @@ int swap_int32(int val);
 
 void init_vm(vm_t *vm);
 void dump_arena(const vm_t *vm);
+int my_str_isnum(char *str);
+
+int corewar(int argc, char **argv);
+
+
+int my_strcmp(char const *s1, char const *s2);
+int my_getnbr(char const *str);
 
 #endif
