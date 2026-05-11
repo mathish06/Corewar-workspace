@@ -58,8 +58,20 @@ Test(corewar_parsing, invalid_n_flag) {
 }
 
 Test(corewar_parsing, valid_arguments) {
+    cr_redirect_stdout();
+    cr_redirect_stderr();
+    header_t h;
+    memset(&h, 0, sizeof(header_t));
+    h.magic = swap_int32(COREWAR_EXEC_MAGIC);
+    h.prog_size = swap_int32(4);
+    uint8_t payload[4] = {1, 2, 3, 4};
+    FILE *f = fopen("champ.cor", "w");
+    fwrite(&h, sizeof(header_t), 1, f);
+    fwrite(payload, 1, 4, f);
+    fclose(f);
     char *argv[] = {"./corewar", "-dump", "10", "-n", "1", "-a", "512", "champ.cor", NULL};
     cr_assert_eq(corewar(8, argv), 0);
+    remove("champ.cor");
 }
 
 Test(corewar_parsing, too_many_champions) {
@@ -183,4 +195,43 @@ Test(champion, load_zero_size_champion) {
     
     free_champion(&champ);
     remove("zero.cor");
+}
+
+Test(prog_champ, ids_and_addresses) {
+    global_t global;
+    global.nbr_champions = 2;
+    global.champions[0].flag_n = -1;
+    global.champions[0].flag_a = -1;
+    global.champions[1].flag_n = 5;
+    global.champions[1].flag_a = 100;
+    prep_usernames_and_addresses(&global);
+    cr_assert_eq(global.champions[1].prog_number, 5);
+    cr_assert_eq(global.champions[0].prog_number, 1);
+    cr_assert_eq(global.champions[0].load_address, 0);
+    cr_assert_eq(global.champions[1].load_address, 100);
+}
+
+Test(prog_champ, arena_and_processes) {
+    global_t global;
+    vm_t vm;
+    vm.process_list = NULL;
+    for(int i = 0; i < MEM_SIZE; i++) 
+        vm.arena[i] = 0;
+    global.nbr_champions = 1;
+    global.champions[0].prog_number = 42;
+    global.champions[0].header.prog_size = 4;
+    global.champions[0].load_address = MEM_SIZE - 2;
+    uint8_t code[4] = {0x0A, 0x0B, 0x0C, 0x0D};
+    global.champions[0].code = code;
+    entry_into_arena(&global, &vm);
+    cr_assert_eq(vm.arena[MEM_SIZE - 2], 0x0A);
+    cr_assert_eq(vm.arena[MEM_SIZE - 1], 0x0B);
+    cr_assert_eq(vm.arena[0], 0x0C);
+    cr_assert_eq(vm.arena[1], 0x0D);
+    create_initial_processes(&global, &vm);
+    cr_assert_neq(vm.process_list, NULL);
+    cr_assert_eq(vm.process_list->pc, MEM_SIZE - 2);
+    cr_assert_eq(vm.process_list->registers[0], 42);
+    cr_assert_eq(vm.process_list->carry, 0);
+    free(vm.process_list); 
 }
