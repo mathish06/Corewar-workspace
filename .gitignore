@@ -1,2 +1,5 @@
 *.o
 *.cor
+unit_tests
+*.gcda
+*.gcno
