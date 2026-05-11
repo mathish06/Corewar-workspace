@@ -6,19 +6,30 @@
 */
 #include "../../include/corewar.h"
 
-void prep_usernames_and_addresses(global_t *global)
+static int is_id_taken(global_t *global, int id)
 {
-    int champ_nbr = 1;
+    for (int i = 0; i < global->nbr_champions; i++) {
+        if (global->champions[i].prog_number == id)
+            return 1;
+    }
+    return 0;
+}
+
+static void assign_missing_ids(global_t *global, int i)
+{
+    int candidate_id = 1;
+
+    if (global->champions[i].prog_number == -1) {
+        while (is_id_taken(global, candidate_id))
+            candidate_id++;
+        global->champions[i].prog_number = candidate_id;
+    }
+}
+
+static void assign_load_addresses(global_t *global)
+{
     int gap = MEM_SIZE / global->nbr_champions;
 
-    for (int i = 0; i < global->nbr_champions; i++) {
-        if (global->champions[i].flag_n == -1) {
-            global->champions[i].prog_number = champ_nbr;
-            champ_nbr++;
-        } else {
-            global->champions[i].prog_number = global->champions[i].flag_n;
-        }
-    }
     for (int i = 0; i < global->nbr_champions; i++) {
         if (global->champions[i].flag_a == -1)
             global->champions[i].load_address = i * gap;
@@ -27,6 +38,19 @@ void prep_usernames_and_addresses(global_t *global)
                 % MEM_SIZE;
         }
     }
+}
+
+void prep_usernames_and_addresses(global_t *global)
+{
+    for (int i = 0; i < global->nbr_champions; i++) {
+        if (global->champions[i].flag_n != -1)
+            global->champions[i].prog_number = global->champions[i].flag_n;
+        else
+            global->champions[i].prog_number = -1;
+    }
+    for (int i = 0; i < global->nbr_champions; i++)
+        assign_missing_ids(global, i);
+    assign_load_addresses(global);
 }
 
 void entry_into_arena(global_t *global, vm_t *vm)
@@ -42,4 +66,3 @@ void entry_into_arena(global_t *global, vm_t *vm)
         }
     }
 }
-
