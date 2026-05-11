@@ -15,15 +15,16 @@ LIB_NAME =  libmy.a
 
 # 2. SOURCES
 
-SRC     =   src/main.c \
-			src/arena.c \
-			src/champ/endian.c 		\
-			src/champ/champion.c	\
-			src/core/corewar.c		\
-			src/tools/tools.c
+SRC     =   src/main.c 							\
+			src/arena.c 						\
+			src/champ/endian.c 					\
+			src/champ/champion.c				\
+			src/core/corewar.c					\
+			src/tools/tools.c					\
+			src/champ/prog_champ.c
 
 
-LIB_SRC =   lib/my/my_strcmp.c		\
+LIB_SRC =   lib/my/my_strcmp.c					\
 			lib/my/my_getnbr.c
 
 # 3. OBJETS
