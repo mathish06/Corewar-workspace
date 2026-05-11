@@ -72,19 +72,43 @@ static int parse_single_arg(char **argv, int *i, global_t *global)
     return handle_champion(argv[*i], global);
 }
 
+static void init_structs(global_t *global, vm_t *vm)
+{
+    global->dump = -1;
+    global->nbr_champions = 0;
+    global->temp_n = -1;
+    global->temp_a = -1;
+    vm->process_list = NULL;
+}
+
+static int setup_vm(global_t *global, vm_t *vm)
+{
+    init_vm(vm);
+    for (int i = 0; i < global->nbr_champions; i++) {
+        if (load_champion(&global->champions[i],
+                global->champions[i].filepath) == 84)
+            return 84;
+    }
+    prep_usernames_and_addresses(global);
+    entry_into_arena(global, vm);
+    create_initial_processes(global, vm);
+    return 0;
+}
+
 int corewar(int argc, char **argv)
 {
     global_t global;
+    vm_t vm;
 
-    global.dump = -1;
-    global.nbr_champions = 0;
-    global.temp_n = -1;
-    global.temp_a = -1;
+    init_structs(&global, &vm);
     for (int i = 1; i < argc; i++) {
         if (parse_single_arg(argv, &i, &global) == 84)
             return 84;
     }
     if (global.nbr_champions == 0)
         return 84;
+    if (setup_vm(&global, &vm) == 84)
+        return 84;
+    dump_arena(&vm);
     return 0;
 }
