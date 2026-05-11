@@ -17,13 +17,7 @@
 
     #define MEM_SIZE (6 * 1024)
 
-typedef struct champion_s {
-    header_t header;
-    uint8_t *code;
-    int load_address;
-    int prog_number;
-} champion_t;
-    #include <./corwar_struct.h>
+    #include "corwar_struct.h"
 
 typedef struct vm_s {
     uint8_t arena[MEM_SIZE];
