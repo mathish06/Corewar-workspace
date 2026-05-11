@@ -26,4 +26,8 @@ typedef struct global_s {
     int temp_a;
 } global_t;
 
+typedef struct vm_s {
+    uint8_t arena[MEM_SIZE];
+} vm_t;
+
 #endif

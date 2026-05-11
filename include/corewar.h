@@ -19,10 +19,6 @@
 
     #include "corwar_struct.h"
 
-typedef struct vm_s {
-    uint8_t arena[MEM_SIZE];
-} vm_t;
-
 int load_champion(champion_t *champ, const char *filepath);
 void free_champion(champion_t *champ);
 int swap_int32(int val);
