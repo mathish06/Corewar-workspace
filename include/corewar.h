@@ -24,6 +24,7 @@ void free_champion(champion_t *champ);
 int swap_int32(int val);
 void prep_usernames_and_addresses(global_t *global);
 void entry_into_arena(global_t *global, vm_t *vm);
+void create_initial_processes(global_t *global, vm_t *vm);
 
 void init_vm(vm_t *vm);
 void dump_arena(const vm_t *vm);
