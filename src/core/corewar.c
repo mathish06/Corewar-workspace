@@ -78,6 +78,8 @@ int corewar(int argc, char **argv)
 
     global.dump = -1;
     global.nbr_champions = 0;
+    global.temp_n = -1;
+    global.temp_a = -1;
     for (int i = 1; i < argc; i++) {
         if (parse_single_arg(argv, &i, &global) == 84)
             return 84;
