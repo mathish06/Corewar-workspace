@@ -66,3 +66,21 @@ void entry_into_arena(global_t *global, vm_t *vm)
         }
     }
 }
+
+void create_initial_processes(global_t *global, vm_t *vm)
+{
+    process_t *new_process;
+
+    for (int i = 0; i < global->nbr_champions; i++) {
+        new_process = malloc(sizeof(process_t));
+        if (!new_process)
+            return;
+        new_process->pc = global->champions[i].load_address;
+        new_process->carry = 0;
+        for (int y = 0; y < REG_NUMBER; y++)
+            new_process->registers[y] = 0;
+        new_process->registers[0] = global->champions[i].prog_number;
+        new_process->next = vm->process_list;
+        vm->process_list = new_process;
+    }
+}
