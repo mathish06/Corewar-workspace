@@ -52,7 +52,6 @@ int game_loop(global_t *global, vm_t *vm)
             dump_arena(vm);
             return 0;
         }
-        // TODO: Execute instructions
         vm->current_cycle++;
         vm->total_cycles++;
         handle_verification(vm);
