@@ -197,6 +197,24 @@ Test(champion, load_zero_size_champion) {
     remove("zero.cor");
 }
 
+Test(coding_byte, decode_standard_byte) {
+    int types[4];
+    decode_coding_byte(0x68, types);
+    cr_assert_eq(types[0], T_REG);
+    cr_assert_eq(types[1], T_DIR);
+    cr_assert_eq(types[2], T_DIR);
+    cr_assert_eq(types[3], 0);
+}
+
+Test(coding_byte, decode_indirect_byte) {
+    int types[4];
+    decode_coding_byte(0xF0, types);
+    cr_assert_eq(types[0], T_IND);
+    cr_assert_eq(types[1], T_IND);
+    cr_assert_eq(types[2], 0);
+    cr_assert_eq(types[3], 0);
+}
+
 Test(prog_champ, ids_and_addresses) {
     global_t global;
     global.nbr_champions = 2;

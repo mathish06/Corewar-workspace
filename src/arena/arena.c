@@ -19,15 +19,22 @@ void init_vm(vm_t *vm)
 
 void dump_arena(const vm_t *vm)
 {
+    const char *hex = "0123456789abcdef";
+    char buf[2];
+    char space = ' ';
+    char nl = '\n';
+
     if (vm == NULL) {
         return;
     }
     for (int i = 0; i < MEM_SIZE; i++) {
-        printf("%02x", vm->arena[i]);
+        buf[0] = hex[vm->arena[i] >> 4];
+        buf[1] = hex[vm->arena[i] & 0x0F];
+        write(1, buf, 2);
         if ((i + 1) % 32 == 0) {
-            printf("\n");
+            write(1, &nl, 1);
         } else {
-            printf(" ");
+            write(1, &space, 1);
         }
     }
 }

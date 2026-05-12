@@ -37,6 +37,7 @@ int game_loop(global_t *global, vm_t *vm);
 
 int my_strcmp(char const *s1, char const *s2);
 int my_getnbr(char const *str);
+void decode_coding_byte(uint8_t cb, int types[4]);
 void my_putchar(char c);
 int my_putstr(char const *str);
 
