@@ -21,7 +21,8 @@ SRC     =   src/main.c 							\
 			src/champ/champion.c				\
 			src/core/corewar.c					\
 			src/tools/tools.c					\
-			src/champ/prog_champ.c
+			src/champ/prog_champ.c				\
+			src/core/game_loop.c
 
 
 LIB_SRC =   lib/my/my_strcmp.c					\
