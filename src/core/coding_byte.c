@@ -11,6 +11,8 @@ void decode_coding_byte(uint8_t cb, int types[4])
 {
     int raw;
 
+    if (types == NULL)
+        return;
     for (int i = 0; i < 4; i++) {
         raw = (cb >> (6 - (i * 2))) & 3;
         switch (raw) {
