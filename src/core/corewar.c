@@ -79,6 +79,10 @@ static void init_structs(global_t *global, vm_t *vm)
     global->temp_n = -1;
     global->temp_a = -1;
     vm->process_list = NULL;
+    vm->total_cycles = 0;
+    vm->current_cycle = 0;
+    vm->live_count = 0;
+    vm->cycle_to_die = CYCLE_TO_DIE;
 }
 
 static int setup_vm(global_t *global, vm_t *vm)
