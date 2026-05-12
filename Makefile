@@ -15,17 +15,21 @@ LIB_NAME =  libmy.a
 
 # 2. SOURCES
 
-SRC     =   src/main.c \
-			src/arena.c \
-			src/champ/endian.c 		\
-			src/champ/champion.c	\
-			src/core/corewar.c		\
-			src/core/coding_byte.c	\
-			src/tools/tools.c
+SRC     =   src/main.c 							\
+			src/arena/arena.c 					\
+			src/champ/endian.c 					\
+			src/champ/champion.c				\
+			src/core/corewar.c					\
+			src/core/coding_byte.c				\
+			src/tools/tools.c					\
+			src/champ/prog_champ.c				\
+			src/core/game_loop.c
 
 
-LIB_SRC =   lib/my/my_strcmp.c		\
-			lib/my/my_getnbr.c
+LIB_SRC =   lib/my/my_strcmp.c					\
+			lib/my/my_getnbr.c					\
+			lib/my/my_putchar.c					\
+			lib/my/my_putstr.c
 
 # 3. OBJETS
 TESTS_SRC = tests/unit_tests.c
