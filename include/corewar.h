@@ -32,6 +32,7 @@ void dump_arena(const vm_t *vm);
 int my_str_isnum(char *str);
 
 int corewar(int argc, char **argv);
+int game_loop(global_t *global, vm_t *vm);
 
 
 int my_strcmp(char const *s1, char const *s2);
