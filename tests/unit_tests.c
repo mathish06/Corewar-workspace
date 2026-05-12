@@ -235,3 +235,82 @@ Test(prog_champ, arena_and_processes) {
     cr_assert_eq(vm.process_list->carry, 0);
     free(vm.process_list); 
 }
+
+Test(game_loop, dump_stops_execution)
+{
+    global_t global;
+    vm_t vm;
+    process_t proc;
+
+    global.dump = 5;
+    vm.process_list = &proc;
+    vm.cycle_to_die = 100;
+    vm.total_cycles = 0;
+    vm.current_cycle = 0;
+    cr_redirect_stdout();
+    cr_assert_eq(game_loop(&global, &vm), 0);
+    cr_assert_eq(vm.total_cycles, 5);
+}
+
+Test(game_loop, process_dies_when_not_alive)
+{
+    global_t global;
+    vm_t vm;
+    process_t *proc = malloc(sizeof(process_t));
+
+    global.dump = -1;
+    proc->is_alive = 0;
+    proc->next = NULL;
+    vm.process_list = proc;
+    vm.cycle_to_die = 10;
+    vm.total_cycles = 0;
+    vm.current_cycle = 0;
+    vm.live_count = 0;
+    cr_redirect_stdout();
+    game_loop(&global, &vm);
+    cr_assert_null(vm.process_list);
+    cr_assert_eq(vm.total_cycles, 10);
+}
+
+Test(game_loop, process_survives_then_dies)
+{
+    global_t global;
+    vm_t vm;
+    process_t *proc = malloc(sizeof(process_t));
+
+    global.dump = -1;
+    proc->is_alive = 1;
+    proc->next = NULL;
+    vm.process_list = proc;
+    vm.cycle_to_die = 15;
+    vm.total_cycles = 0;
+    vm.current_cycle = 0;
+    vm.live_count = 0;
+    cr_redirect_stdout();
+    game_loop(&global, &vm);
+    cr_assert_null(vm.process_list);
+    cr_assert_eq(vm.total_cycles, 30);
+}
+
+Test(game_loop, difficulty_increases)
+{
+    global_t global;
+    vm_t vm;
+    process_t *proc = malloc(sizeof(process_t));
+
+    global.dump = 20;
+    proc->is_alive = 1;
+    proc->next = NULL;
+    vm.process_list = proc;
+    vm.cycle_to_die = 20;
+    vm.total_cycles = 0;
+    vm.current_cycle = 0;
+    vm.live_count = NBR_LIVE;
+    cr_redirect_stdout();
+    game_loop(&global, &vm);
+    cr_assert_eq(vm.cycle_to_die, 20 - CYCLE_DELTA);
+    cr_assert_eq(vm.live_count, 0);
+    cr_assert_eq(vm.current_cycle, 0);
+    cr_assert_eq(proc->is_alive, 0);
+    free(proc);
+}
