@@ -314,3 +314,37 @@ Test(game_loop, difficulty_increases)
     cr_assert_eq(proc->is_alive, 0);
     free(proc);
 }
+
+Test(corewar_parsing, help_flag_valid)
+{
+    char *argv[] = {"./corewar", "-h", NULL};
+    int result;
+
+    cr_redirect_stdout();
+    result = corewar(2, argv);
+    cr_assert_eq(result, 0);
+    cr_assert_stdout_eq_str(
+        "USAGE\n"
+        "./corewar [-dump nbr_cycle] [[-n prog_number] [-a load_address] "
+        "prog_name] ...\n"
+        "DESCRIPTION\n"
+        "-dump nbr_cycle dumps the state of the virtual machine after "
+        "the nbr_cycle execution\n"
+        "-n prog_number sets the next program's number. By default, "
+        "the first free number in the parameter order\n"
+        "-a load_address sets the next program's loading address. "
+        "When no address is specified, optimize the addresses so that the "
+        "processes are as far away from each other as possible. "
+        "The addresses are MEM_SIZE modulo.\n"
+    );
+}
+
+Test(corewar_parsing, help_flag_too_many_args)
+{
+    char *argv[] = {"./corewar", "-h", "champion.cor", NULL};
+    int result;
+
+    cr_redirect_stderr();
+    result = corewar(3, argv);
+    cr_assert_eq(result, 84);
+}
