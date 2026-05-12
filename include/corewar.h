@@ -36,5 +36,6 @@ int corewar(int argc, char **argv);
 
 int my_strcmp(char const *s1, char const *s2);
 int my_getnbr(char const *str);
+void decode_coding_byte(uint8_t cb, int types[4]);
 
 #endif

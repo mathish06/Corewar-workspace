@@ -7,13 +7,6 @@
 
 #include "../../include/corewar.h"
 
-static void print_champion_info(const champion_t *c)
-{
-    printf("Champion '%s' loaded successfully! (Size: %d bytes)\n",
-        c->header.prog_name, c->header.prog_size);
-    printf("Comment: %s\n", c->header.comment);
-}
-
 static int read_and_validate_header(FILE *fd,
     header_t *header,
     const char *filepath)
@@ -97,7 +90,6 @@ int load_champion(champion_t *champ, const char *filepath)
         fclose(fd);
         return 84;
     }
-    print_champion_info(champ);
     fclose(fd);
     return 0;
 }
