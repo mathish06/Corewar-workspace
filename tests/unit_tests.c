@@ -58,8 +58,20 @@ Test(corewar_parsing, invalid_n_flag) {
 }
 
 Test(corewar_parsing, valid_arguments) {
+    cr_redirect_stdout();
+    cr_redirect_stderr();
+    header_t h;
+    memset(&h, 0, sizeof(header_t));
+    h.magic = swap_int32(COREWAR_EXEC_MAGIC);
+    h.prog_size = swap_int32(4);
+    uint8_t payload[4] = {1, 2, 3, 4};
+    FILE *f = fopen("champ.cor", "w");
+    fwrite(&h, sizeof(header_t), 1, f);
+    fwrite(payload, 1, 4, f);
+    fclose(f);
     char *argv[] = {"./corewar", "-dump", "10", "-n", "1", "-a", "512", "champ.cor", NULL};
     cr_assert_eq(corewar(8, argv), 0);
+    remove("champ.cor");
 }
 
 Test(corewar_parsing, too_many_champions) {
@@ -201,4 +213,156 @@ Test(coding_byte, decode_indirect_byte) {
     cr_assert_eq(types[1], T_IND);
     cr_assert_eq(types[2], 0);
     cr_assert_eq(types[3], 0);
+}
+
+Test(prog_champ, ids_and_addresses) {
+    global_t global;
+    global.nbr_champions = 2;
+    global.champions[0].flag_n = -1;
+    global.champions[0].flag_a = -1;
+    global.champions[1].flag_n = 5;
+    global.champions[1].flag_a = 100;
+    prep_usernames_and_addresses(&global);
+    cr_assert_eq(global.champions[1].prog_number, 5);
+    cr_assert_eq(global.champions[0].prog_number, 1);
+    cr_assert_eq(global.champions[0].load_address, 0);
+    cr_assert_eq(global.champions[1].load_address, 100);
+}
+
+Test(prog_champ, arena_and_processes) {
+    global_t global;
+    vm_t vm;
+    vm.process_list = NULL;
+    for(int i = 0; i < MEM_SIZE; i++) 
+        vm.arena[i] = 0;
+    global.nbr_champions = 1;
+    global.champions[0].prog_number = 42;
+    global.champions[0].header.prog_size = 4;
+    global.champions[0].load_address = MEM_SIZE - 2;
+    uint8_t code[4] = {0x0A, 0x0B, 0x0C, 0x0D};
+    global.champions[0].code = code;
+    entry_into_arena(&global, &vm);
+    cr_assert_eq(vm.arena[MEM_SIZE - 2], 0x0A);
+    cr_assert_eq(vm.arena[MEM_SIZE - 1], 0x0B);
+    cr_assert_eq(vm.arena[0], 0x0C);
+    cr_assert_eq(vm.arena[1], 0x0D);
+    create_initial_processes(&global, &vm);
+    cr_assert_neq(vm.process_list, NULL);
+    cr_assert_eq(vm.process_list->pc, MEM_SIZE - 2);
+    cr_assert_eq(vm.process_list->registers[0], 42);
+    cr_assert_eq(vm.process_list->carry, 0);
+    free(vm.process_list); 
+}
+
+Test(game_loop, dump_stops_execution)
+{
+    global_t global;
+    vm_t vm;
+    process_t proc;
+
+    global.dump = 5;
+    vm.process_list = &proc;
+    vm.cycle_to_die = 100;
+    vm.total_cycles = 0;
+    vm.current_cycle = 0;
+    cr_redirect_stdout();
+    cr_assert_eq(game_loop(&global, &vm), 0);
+    cr_assert_eq(vm.total_cycles, 5);
+}
+
+Test(game_loop, process_dies_when_not_alive)
+{
+    global_t global;
+    vm_t vm;
+    process_t *proc = malloc(sizeof(process_t));
+
+    global.dump = -1;
+    proc->is_alive = 0;
+    proc->next = NULL;
+    vm.process_list = proc;
+    vm.cycle_to_die = 10;
+    vm.total_cycles = 0;
+    vm.current_cycle = 0;
+    vm.live_count = 0;
+    cr_redirect_stdout();
+    game_loop(&global, &vm);
+    cr_assert_null(vm.process_list);
+    cr_assert_eq(vm.total_cycles, 10);
+}
+
+Test(game_loop, process_survives_then_dies)
+{
+    global_t global;
+    vm_t vm;
+    process_t *proc = malloc(sizeof(process_t));
+
+    global.dump = -1;
+    proc->is_alive = 1;
+    proc->next = NULL;
+    vm.process_list = proc;
+    vm.cycle_to_die = 15;
+    vm.total_cycles = 0;
+    vm.current_cycle = 0;
+    vm.live_count = 0;
+    cr_redirect_stdout();
+    game_loop(&global, &vm);
+    cr_assert_null(vm.process_list);
+    cr_assert_eq(vm.total_cycles, 30);
+}
+
+Test(game_loop, difficulty_increases)
+{
+    global_t global;
+    vm_t vm;
+    process_t *proc = malloc(sizeof(process_t));
+
+    global.dump = 20;
+    proc->is_alive = 1;
+    proc->next = NULL;
+    vm.process_list = proc;
+    vm.cycle_to_die = 20;
+    vm.total_cycles = 0;
+    vm.current_cycle = 0;
+    vm.live_count = NBR_LIVE;
+    cr_redirect_stdout();
+    game_loop(&global, &vm);
+    cr_assert_eq(vm.cycle_to_die, 20 - CYCLE_DELTA);
+    cr_assert_eq(vm.live_count, 0);
+    cr_assert_eq(vm.current_cycle, 0);
+    cr_assert_eq(proc->is_alive, 0);
+    free(proc);
+}
+
+Test(corewar_parsing, help_flag_valid)
+{
+    char *argv[] = {"./corewar", "-h", NULL};
+    int result;
+
+    cr_redirect_stdout();
+    result = corewar(2, argv);
+    cr_assert_eq(result, 0);
+    cr_assert_stdout_eq_str(
+        "USAGE\n"
+        "./corewar [-dump nbr_cycle] [[-n prog_number] [-a load_address] "
+        "prog_name] ...\n"
+        "DESCRIPTION\n"
+        "-dump nbr_cycle dumps the state of the virtual machine after "
+        "the nbr_cycle execution\n"
+        "-n prog_number sets the next program's number. By default, "
+        "the first free number in the parameter order\n"
+        "-a load_address sets the next program's loading address. "
+        "When no address is specified, optimize the addresses so that the "
+        "processes are as far away from each other as possible. "
+        "The addresses are MEM_SIZE modulo.\n"
+    );
+}
+
+Test(corewar_parsing, help_flag_too_many_args)
+{
+    char *argv[] = {"./corewar", "-h", "champion.cor", NULL};
+    int result;
+
+    cr_redirect_stderr();
+    result = corewar(3, argv);
+    cr_assert_eq(result, 84);
 }
