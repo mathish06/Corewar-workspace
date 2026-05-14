@@ -27,3 +27,14 @@ static void execution(process_t *curr)
     if (curr->cycle_to_wait == 0)
         curr->pc = (curr->pc + 1) % MEM_SIZE;
 }
+
+void execute_processes(vm_t *vm)
+{
+    process_t *curr = vm->process_list;
+
+    for (; curr != NULL; curr = curr->next) {
+        fetch_instruction(vm, curr);
+        cooldown(curr);
+        execution(curr);
+    }
+}
