@@ -80,6 +80,9 @@ void create_initial_processes(global_t *global, vm_t *vm)
         for (int y = 0; y < REG_NUMBER; y++)
             new_process->registers[y] = 0;
         new_process->registers[0] = global->champions[i].prog_number;
+        new_process->is_alive = 0;
+        new_process->cycle_to_wait = 0;
+        new_process->current_opcode = 0;
         new_process->next = vm->process_list;
         vm->process_list = new_process;
     }
