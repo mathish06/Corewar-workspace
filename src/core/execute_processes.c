@@ -22,19 +22,26 @@ static void cooldown(process_t *curr)
         curr->cycle_to_wait--;
 }
 
-static void execution(process_t *curr)
+static void execution(global_t *global, vm_t *vm, process_t *curr)
 {
-    if (curr->cycle_to_wait == 0)
-        curr->pc = (curr->pc + 1) % MEM_SIZE;
+    void (*actions[17])(global_t *, vm_t *, process_t *) = {NULL};
+
+    if (curr->cycle_to_wait == 0) {
+        if (curr->current_opcode >= 1 && curr->current_opcode <= 16 &&
+            actions[curr->current_opcode] != NULL) {
+            actions[curr->current_opcode](global, vm, curr);
+        } else
+            curr->pc = (curr->pc + 1) % MEM_SIZE;
+    }
 }
 
-void execute_processes(vm_t *vm)
+void execute_processes(global_t *global, vm_t *vm)
 {
     process_t *curr = vm->process_list;
 
     for (; curr != NULL; curr = curr->next) {
         fetch_instruction(vm, curr);
         cooldown(curr);
-        execution(curr);
+        execution(global, vm, curr);
     }
 }
