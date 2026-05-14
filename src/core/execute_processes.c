@@ -21,3 +21,9 @@ static void cooldown(process_t *curr)
     if (curr->cycle_to_wait > 0)
         curr->cycle_to_wait--;
 }
+
+static void execution(process_t *curr)
+{
+    if (curr->cycle_to_wait == 0)
+        curr->pc = (curr->pc + 1) % MEM_SIZE;
+}
