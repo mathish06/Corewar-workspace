@@ -24,7 +24,8 @@ SRC     =   src/main.c 							\
 			src/core/args_parser.c				\
 			src/tools/tools.c					\
 			src/champ/prog_champ.c				\
-			src/core/game_loop.c
+			src/core/game_loop.c				\
+			src/op.c
 
 
 LIB_SRC =   lib/my/my_strcmp.c					\
