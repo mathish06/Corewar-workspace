@@ -21,6 +21,7 @@ SRC     =   src/main.c 							\
 			src/champ/champion.c				\
 			src/core/corewar.c					\
 			src/core/coding_byte.c				\
+			src/core/args_parser.c				\
 			src/tools/tools.c					\
 			src/champ/prog_champ.c				\
 			src/core/game_loop.c

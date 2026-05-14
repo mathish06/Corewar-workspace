@@ -40,5 +40,6 @@ int my_getnbr(char const *str);
 void decode_coding_byte(uint8_t cb, int types[4]);
 void my_putchar(char c);
 int my_putstr(char const *str);
+int parse_single_arg(char **argv, int *i, global_t *global);
 
 #endif
