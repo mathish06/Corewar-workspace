@@ -52,6 +52,7 @@ int game_loop(global_t *global, vm_t *vm)
             dump_arena(vm);
             return 0;
         }
+        execute_processes(global, vm);
         vm->current_cycle++;
         vm->total_cycles++;
         handle_verification(vm);
