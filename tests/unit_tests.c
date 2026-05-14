@@ -366,3 +366,67 @@ Test(corewar_parsing, help_flag_too_many_args)
     result = corewar(3, argv);
     cr_assert_eq(result, 84);
 }
+
+Test(execute_processes, fetch_valid_instruction)
+{
+    vm_t vm;
+    process_t proc;
+
+    memset(&vm, 0, sizeof(vm_t));
+    memset(&proc, 0, sizeof(process_t));
+    vm.process_list = &proc;
+    vm.arena[0] = 1;
+    proc.pc = 0;
+    proc.cycle_to_wait = 0;
+    execute_processes(&vm);
+    cr_assert_eq(proc.current_opcode, 1);
+    cr_assert_eq(proc.cycle_to_wait, op_tab[1].nbr_cycles - 1);
+    cr_assert_eq(proc.pc, 0);
+}
+
+Test(execute_processes, fetch_invalid_instruction)
+{
+    vm_t vm;
+    process_t proc;
+
+    memset(&vm, 0, sizeof(vm_t));
+    memset(&proc, 0, sizeof(process_t));
+    vm.process_list = &proc;
+    vm.arena[0] = 42;
+    proc.pc = 0;
+    proc.cycle_to_wait = 0;
+    execute_processes(&vm);
+    cr_assert_eq(proc.current_opcode, 42);
+    cr_assert_eq(proc.cycle_to_wait, 0);
+    cr_assert_eq(proc.pc, 1);
+}
+
+Test(execute_processes, cooldown_decrements)
+{
+    vm_t vm;
+    process_t proc;
+
+    memset(&vm, 0, sizeof(vm_t));
+    memset(&proc, 0, sizeof(process_t));
+    vm.process_list = &proc;
+    proc.cycle_to_wait = 5;
+    proc.pc = 0;
+    execute_processes(&vm);
+    cr_assert_eq(proc.cycle_to_wait, 4);
+    cr_assert_eq(proc.pc, 0);
+}
+
+Test(execute_processes, execution_at_zero)
+{
+    vm_t vm;
+    process_t proc;
+
+    memset(&vm, 0, sizeof(vm_t));
+    memset(&proc, 0, sizeof(process_t));
+    vm.process_list = &proc;
+    proc.cycle_to_wait = 1;
+    proc.pc = MEM_SIZE - 1;
+    execute_processes(&vm);
+    cr_assert_eq(proc.cycle_to_wait, 0);
+    cr_assert_eq(proc.pc, 0);
+}
