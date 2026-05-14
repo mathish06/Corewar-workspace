@@ -20,12 +20,13 @@ SRC     =   src/main.c 							\
 			src/champ/endian.c 					\
 			src/champ/champion.c				\
 			src/core/corewar.c					\
-			src/core/coding_byte.c				\
-			src/core/args_parser.c				\
+			src/tools/coding_byte.c				\
+			src/parsing/args_parser.c			\
 			src/tools/tools.c					\
 			src/champ/prog_champ.c				\
 			src/core/game_loop.c				\
-			src/op.c
+			src/op.c							\
+			src/core/execute_processes.c
 
 
 LIB_SRC =   lib/my/my_strcmp.c					\
