@@ -31,6 +31,8 @@ typedef struct process_s {
     int carry;
     int registers[REG_NUMBER];
     int is_alive;
+    int cycle_to_wait;
+    int current_opcode;
     struct process_s *next;
 } process_t;
 
