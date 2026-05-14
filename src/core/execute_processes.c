@@ -15,3 +15,9 @@ static void fetch_instruction(vm_t *vm, process_t *curr)
         }
     }
 }
+
+static void cooldown(process_t *curr)
+{
+    if (curr->cycle_to_wait > 0)
+        curr->cycle_to_wait--;
+}
