@@ -58,7 +58,7 @@ void exec_print(global_t *global, vm_t *vm, process_t *curr)
 
     (void)global;
     reg_nb = vm->arena[(curr->pc + 2) % MEM_SIZE];
-    if (reg_nb >= 1 && reg_nb <= 16) {
+    if (reg_nb >= 1 && reg_nb <= REG_NUMBER) {
         reg_val = curr->registers[reg_nb - 1];
         reg_val = reg_val % 256;
         my_putchar(reg_val);
