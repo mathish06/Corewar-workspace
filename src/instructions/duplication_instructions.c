@@ -40,3 +40,20 @@ void exec_fork(global_t *global, vm_t *vm, process_t *curr)
         clone->pc = clone->pc + MEM_SIZE;
     curr->pc = (curr->pc + 3) % MEM_SIZE;
 }
+
+void exec_lfork(global_t *global, vm_t *vm, process_t *curr)
+{
+    short offset;
+    process_t *clone;
+
+    (void)global;
+    offset = (vm->arena[(curr->pc + 1) % MEM_SIZE] << 8)
+        | (vm->arena[(curr->pc + 2) % MEM_SIZE]);
+    clone = duplicate_process(vm, curr);
+    if (!clone)
+        return;
+    clone->pc = (curr->pc + offset) % MEM_SIZE;
+    if (clone->pc < 0)
+        clone->pc = clone->pc + MEM_SIZE;
+    curr->pc = (curr->pc + 3) % MEM_SIZE;
+}
