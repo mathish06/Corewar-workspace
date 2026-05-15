@@ -18,6 +18,7 @@ static void init_structs(global_t *global, vm_t *vm)
     vm->current_cycle = 0;
     vm->live_count = 0;
     vm->cycle_to_die = CYCLE_TO_DIE;
+    global->last_live_id = 0;
 }
 
 static int setup_vm(global_t *global, vm_t *vm)
@@ -29,6 +30,8 @@ static int setup_vm(global_t *global, vm_t *vm)
             return 84;
     }
     prep_usernames_and_addresses(global);
+    global->last_live_id =
+        global->champions[global->nbr_champions - 1].prog_number;
     entry_into_arena(global, vm);
     create_initial_processes(global, vm);
     return 0;
@@ -83,6 +86,7 @@ int corewar(int argc, char **argv)
     if (setup_vm(&global, &vm) == 84)
         return 84;
     game_loop(&global, &vm);
+    display_winner(&global);
     cleanup_vm(&global, &vm);
     return 0;
 }

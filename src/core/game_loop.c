@@ -45,6 +45,20 @@ static void handle_verification(vm_t *vm)
     }
 }
 
+void display_winner(global_t *global)
+{
+    for (int i = 0; i < global->nbr_champions; i++) {
+        if (global->champions[i].prog_number == global->last_live_id) {
+            my_putstr("The player ");
+            my_put_nbr(global->champions[i].prog_number);
+            my_putstr("(");
+            my_putstr(global->champions[i].header.prog_name);
+            my_putstr(")");
+            my_putstr(" has won.\n");
+        }
+    }
+}
+
 int game_loop(global_t *global, vm_t *vm)
 {
     while (vm->process_list != NULL && vm->cycle_to_die > 0) {
