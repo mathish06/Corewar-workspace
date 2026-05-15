@@ -26,6 +26,7 @@ SRC     =   src/main.c 							\
 			src/champ/prog_champ.c				\
 			src/core/game_loop.c				\
 			src/op.c							\
+			src/instructions/instructions_calc.c \
 			src/core/execute_processes.c		\
 			src/actions/basic_instructions.c
 

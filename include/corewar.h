@@ -35,10 +35,9 @@ int corewar(int argc, char **argv);
 int game_loop(global_t *global, vm_t *vm);
 void execute_processes(global_t *global, vm_t *vm);
 
-void exec_live(global_t *global, vm_t *vm, process_t *curr);
-void exec_zjmp(global_t *global, vm_t *vm, process_t *curr);
-void exec_print(global_t *global, vm_t *vm, process_t *curr);
-
+void exec_live(global_t *global, vm_t *vm, process_t *proc);
+void exec_zjmp(global_t *global, vm_t *vm, process_t *proc);
+void exec_print(global_t *global, vm_t *vm, process_t *proc);
 
 int my_strcmp(char const *s1, char const *s2);
 int my_getnbr(char const *str);
@@ -46,6 +45,11 @@ void decode_coding_byte(uint8_t cb, int types[4]);
 void my_putchar(char c);
 int my_putstr(char const *str);
 int parse_single_arg(char **argv, int *i, global_t *global);
+void op_add(global_t *global, vm_t *vm, process_t *proc);
+void op_sub(global_t *global, vm_t *vm, process_t *proc);
+void op_and(global_t *global, vm_t *vm, process_t *proc);
+void op_or(global_t *global, vm_t *vm, process_t *proc);
+void op_xor(global_t *global, vm_t *vm, process_t *proc);
 void nbextremum(void);
 void isextrem(int nb);
 int my_put_nbr(int nb);
