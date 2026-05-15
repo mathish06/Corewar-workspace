@@ -32,7 +32,8 @@ SRC     =   src/main.c 							\
 LIB_SRC =   lib/my/my_strcmp.c					\
 			lib/my/my_getnbr.c					\
 			lib/my/my_putchar.c					\
-			lib/my/my_putstr.c
+			lib/my/my_putstr.c					\
+			lib/my/my_put_nbr.c
 
 # 3. OBJETS
 TESTS_SRC = tests/unit_tests.c
