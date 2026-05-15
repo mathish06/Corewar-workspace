@@ -30,13 +30,16 @@ static int get_val_dir(vm_t *vm, int *pos)
 
 static int get_val_ind(vm_t *vm, process_t *proc, int *pos)
 {
-    int addr = 0;
+    short addr = 0;
     int target = 0;
     int val = 0;
 
     for (int i = 0; i < 2; i++)
         addr = (addr << 8) | vm->arena[(*pos + i) % MEM_SIZE];
-    target = (proc->pc + (addr % IDX_MOD)) % MEM_SIZE;
+    if (proc->current_opcode == 13)
+        target = (proc->pc + addr) % MEM_SIZE;
+    else
+        target = (proc->pc + (addr % IDX_MOD)) % MEM_SIZE;
     if (target < 0)
         target += MEM_SIZE;
     for (int i = 0; i < 4; i++)
@@ -45,7 +48,7 @@ static int get_val_ind(vm_t *vm, process_t *proc, int *pos)
     return val;
 }
 
-static int get_val(vm_t *vm, process_t *proc, int type, int *pos)
+int get_val(vm_t *vm, process_t *proc, int type, int *pos)
 {
     if (type == T_REG)
         return get_val_reg(vm, proc, pos);
@@ -54,22 +57,6 @@ static int get_val(vm_t *vm, process_t *proc, int type, int *pos)
     if (type == T_IND)
         return get_val_ind(vm, proc, pos);
     return 0;
-}
-
-void op_add(global_t *global, vm_t *vm, process_t *proc)
-{
-    int r1 = vm->arena[(proc->pc + 2) % MEM_SIZE] - 1;
-    int r2 = vm->arena[(proc->pc + 3) % MEM_SIZE] - 1;
-    int r3 = vm->arena[(proc->pc + 4) % MEM_SIZE] - 1;
-
-    (void)global;
-    if (r1 < 0 || r1 >= REG_NUMBER || r2 < 0 || r2 >= REG_NUMBER)
-        return;
-    if (r3 < 0 || r3 >= REG_NUMBER)
-        return;
-    proc->registers[r3] = proc->registers[r1] + proc->registers[r2];
-    proc->carry = (proc->registers[r3] == 0);
-    proc->pc = (proc->pc + 5) % MEM_SIZE;
 }
 
 void op_sub(global_t *global, vm_t *vm, process_t *proc)
