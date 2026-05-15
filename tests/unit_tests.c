@@ -438,3 +438,79 @@ Test(execute_processes, execution_at_zero)
     cr_assert_eq(proc.cycle_to_wait, 0);
     cr_assert_eq(proc.pc, 0);
 }
+
+Test(my_put_nbr, positive_number)
+{
+    cr_redirect_stdout();
+    my_put_nbr(42);
+    cr_assert_stdout_eq_str("42");
+}
+
+Test(my_put_nbr, negative_number)
+{
+    cr_redirect_stdout();
+    my_put_nbr(-84);
+    cr_assert_stdout_eq_str("-84");
+}
+
+Test(my_put_nbr, zero_number)
+{
+    cr_redirect_stdout();
+    my_put_nbr(0);
+    cr_assert_stdout_eq_str("0");
+}
+
+Test(my_put_nbr, extremum_number)
+{
+    cr_redirect_stdout();
+    my_put_nbr(-2147483648);
+    cr_assert_stdout_eq_str("-2147483648");
+}
+
+Test(exec_live, valid_live_execution)
+{
+    global_t global;
+    vm_t vm;
+    process_t proc;
+
+    memset(&global, 0, sizeof(global_t));
+    memset(&vm, 0, sizeof(vm_t));
+    memset(&proc, 0, sizeof(process_t));
+    global.nbr_champions = 1;
+    global.champions[0].prog_number = 42;
+    strcpy(global.champions[0].header.prog_name, "TestChamp");
+    proc.pc = 0;
+    vm.arena[1] = 0;
+    vm.arena[2] = 0;
+    vm.arena[3] = 0;
+    vm.arena[4] = 42;
+    cr_redirect_stdout();
+    exec_live(&global, &vm, &proc);
+    cr_assert_eq(proc.is_alive, 1);
+    cr_assert_eq(vm.live_count, 1);
+    cr_assert_eq(proc.pc, 5);
+    cr_assert_stdout_eq_str("The player 42(TestChamp) is alive.\n");
+}
+
+Test(exec_live, live_with_circular_memory)
+{
+    global_t global;
+    vm_t vm;
+    process_t proc;
+
+    memset(&global, 0, sizeof(global_t));
+    memset(&vm, 0, sizeof(vm_t));
+    memset(&proc, 0, sizeof(process_t));
+    global.nbr_champions = 1;
+    global.champions[0].prog_number = 15;
+    strcpy(global.champions[0].header.prog_name, "CircChamp");
+    proc.pc = MEM_SIZE - 2;
+    vm.arena[MEM_SIZE - 1] = 0;
+    vm.arena[0] = 0;
+    vm.arena[1] = 0;
+    vm.arena[2] = 15;
+    cr_redirect_stdout();
+    exec_live(&global, &vm, &proc);
+    cr_assert_eq(proc.is_alive, 1);
+    cr_assert_eq(proc.pc, 3);
+}
