@@ -36,7 +36,7 @@ static void delete_node(vm_t *vm)
 
 static void handle_verification(vm_t *vm)
 {
-    if (vm->current_cycle == vm->cycle_to_die) {
+    if (vm->current_cycle >= vm->cycle_to_die) {
         delete_node(vm);
         if (vm->live_count >= NBR_LIVE)
             vm->cycle_to_die -= CYCLE_DELTA;

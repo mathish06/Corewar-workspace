@@ -65,3 +65,19 @@ void exec_print(global_t *global, vm_t *vm, process_t *curr)
     }
     curr->pc = (curr->pc + 3) % MEM_SIZE;
 }
+
+void op_add(global_t *global, vm_t *vm, process_t *proc)
+{
+    int r1 = vm->arena[(proc->pc + 2) % MEM_SIZE] - 1;
+    int r2 = vm->arena[(proc->pc + 3) % MEM_SIZE] - 1;
+    int r3 = vm->arena[(proc->pc + 4) % MEM_SIZE] - 1;
+
+    (void)global;
+    if (r1 < 0 || r1 >= REG_NUMBER || r2 < 0 || r2 >= REG_NUMBER)
+        return;
+    if (r3 < 0 || r3 >= REG_NUMBER)
+        return;
+    proc->registers[r3] = proc->registers[r1] + proc->registers[r2];
+    proc->carry = (proc->registers[r3] == 0);
+    proc->pc = (proc->pc + 5) % MEM_SIZE;
+}
