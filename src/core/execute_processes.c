@@ -27,7 +27,8 @@ static void execution(global_t *global, vm_t *vm, process_t *curr)
 {
     void (* const actions[17])(global_t *, vm_t *, process_t *) = {
         NULL, exec_live, NULL, NULL, op_add, op_sub, op_and, op_or,
-        op_xor, exec_zjmp, NULL, NULL, NULL, NULL, NULL, NULL, exec_print
+        op_xor, exec_zjmp, NULL, NULL, exec_fork, NULL, NULL,
+        exec_lfork, exec_print
     };
 
     if (curr->cycle_to_wait == 0) {
