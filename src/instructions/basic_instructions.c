@@ -25,6 +25,7 @@ void exec_live(global_t *global, vm_t *vm, process_t *curr)
             my_putstr(global->champions[i].header.prog_name);
             my_putstr(")");
             my_putstr(" is alive.\n");
+            global->last_live_id = player_nb;
         }
     }
     curr->pc = (curr->pc + 5) % MEM_SIZE;
