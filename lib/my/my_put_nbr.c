@@ -7,7 +7,7 @@
 
 #include "../../include/corewar.h"
 
-void nbextremum(int nb)
+void nbextremum(void)
 {
     my_putchar(45);
     my_putchar('2');
@@ -50,7 +50,7 @@ int my_put_nbr(int nb)
     if (!(nb == -2147483648)) {
         isextrem(nb);
     } else {
-        nbextremum(nb);
+        nbextremum();
     }
     return 0;
 }
