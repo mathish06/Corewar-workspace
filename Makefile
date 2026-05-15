@@ -15,26 +15,26 @@ LIB_NAME =  libmy.a
 
 # 2. SOURCES
 
-SRC     =   src/main.c 							\
-			src/arena/arena.c 					\
-			src/champ/endian.c 					\
-			src/champ/champion.c				\
-			src/core/corewar.c					\
-			src/tools/coding_byte.c				\
-			src/parsing/args_parser.c			\
-			src/tools/tools.c					\
-			src/champ/prog_champ.c				\
-			src/core/game_loop.c				\
-			src/op.c							\
-			src/instructions/instructions_calc.c \
-			src/core/execute_processes.c		\
-			src/actions/basic_instructions.c
+SRC     =   src/main.c 								\
+			src/arena/arena.c 						\
+			src/champ/endian.c 						\
+			src/champ/champion.c					\
+			src/core/corewar.c						\
+			src/tools/coding_byte.c					\
+			src/parsing/args_parser.c				\
+			src/tools/tools.c						\
+			src/champ/prog_champ.c					\
+			src/core/game_loop.c					\
+			src/op.c								\
+			src/instructions/instructions_calc.c 	\
+			src/core/execute_processes.c			\
+			src/instructions/basic_instructions.c
 
 
-LIB_SRC =   lib/my/my_strcmp.c					\
-			lib/my/my_getnbr.c					\
-			lib/my/my_putchar.c					\
-			lib/my/my_putstr.c					\
+LIB_SRC =   lib/my/my_strcmp.c						\
+			lib/my/my_getnbr.c						\
+			lib/my/my_putchar.c						\
+			lib/my/my_putstr.c						\
 			lib/my/my_put_nbr.c
 
 # 3. OBJETS
