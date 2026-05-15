@@ -514,3 +514,52 @@ Test(exec_live, live_with_circular_memory)
     cr_assert_eq(proc.is_alive, 1);
     cr_assert_eq(proc.pc, 3);
 }
+
+Test(exec_zjmp, carry_zero_no_jump)
+{
+    global_t global;
+    vm_t vm;
+    process_t proc;
+
+    memset(&global, 0, sizeof(global_t));
+    memset(&vm, 0, sizeof(vm_t));
+    memset(&proc, 0, sizeof(process_t));
+    proc.pc = 10;
+    proc.carry = 0;
+    exec_zjmp(&global, &vm, &proc);
+    cr_assert_eq(proc.pc, 13);
+}
+
+Test(exec_zjmp, carry_one_positive_jump)
+{
+    global_t global;
+    vm_t vm;
+    process_t proc;
+
+    memset(&global, 0, sizeof(global_t));
+    memset(&vm, 0, sizeof(vm_t));
+    memset(&proc, 0, sizeof(process_t));
+    proc.pc = 10;
+    proc.carry = 1;
+    vm.arena[11] = 0x00;
+    vm.arena[12] = 0x15;
+    exec_zjmp(&global, &vm, &proc);
+    cr_assert_eq(proc.pc, 31);
+}
+
+Test(exec_zjmp, carry_one_negative_jump)
+{
+    global_t global;
+    vm_t vm;
+    process_t proc;
+
+    memset(&global, 0, sizeof(global_t));
+    memset(&vm, 0, sizeof(vm_t));
+    memset(&proc, 0, sizeof(process_t));
+    proc.pc = 10;
+    proc.carry = 1;
+    vm.arena[11] = 0xFF;
+    vm.arena[12] = 0xF1;
+    exec_zjmp(&global, &vm, &proc);
+    cr_assert_eq(proc.pc, MEM_SIZE - 5);
+}
