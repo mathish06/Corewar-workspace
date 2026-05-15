@@ -11,7 +11,7 @@ static void fetch_instruction(vm_t *vm, process_t *curr)
 {
     if (curr->cycle_to_wait == 0) {
         curr->current_opcode = vm->arena[curr->pc % MEM_SIZE];
-        if (curr->current_opcode >= 1 && curr->current_opcode <= 16) {
+        if (curr->current_opcode >= 1 && curr->current_opcode <= REG_NUMBER) {
             curr->cycle_to_wait = op_tab[curr->current_opcode].nbr_cycles;
         }
     }
@@ -31,7 +31,7 @@ static void execution(global_t *global, vm_t *vm, process_t *curr)
     };
 
     if (curr->cycle_to_wait == 0) {
-        if (curr->current_opcode >= 1 && curr->current_opcode <= 16 &&
+        if (curr->current_opcode >= 1 && curr->current_opcode <= REG_NUMBER &&
             actions[curr->current_opcode] != NULL) {
             actions[curr->current_opcode](global, vm, curr);
             curr->current_opcode = 0;
