@@ -29,7 +29,8 @@ SRC     =   src/main.c 									\
 			src/instructions/instructions_calc.c 		\
 			src/core/execute_processes.c				\
 			src/instructions/basic_instructions.c		\
-			src/instructions/duplication_instructions.c
+			src/instructions/duplication_instructions.c \
+			src/instructions/instructions_mem.c
 
 
 LIB_SRC =   lib/my/my_strcmp.c							\
