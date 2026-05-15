@@ -64,7 +64,7 @@ int game_loop(global_t *global, vm_t *vm)
     while (vm->process_list != NULL && vm->cycle_to_die > 0) {
         if (vm->total_cycles == global->dump) {
             dump_arena(vm);
-            return 0;
+            return 1;
         }
         execute_processes(global, vm);
         vm->current_cycle++;

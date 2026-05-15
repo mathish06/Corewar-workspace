@@ -85,8 +85,8 @@ int corewar(int argc, char **argv)
         return 84;
     if (setup_vm(&global, &vm) == 84)
         return 84;
-    game_loop(&global, &vm);
-    display_winner(&global);
+    if (game_loop(&global, &vm) == 0)
+        display_winner(&global);
     cleanup_vm(&global, &vm);
     return 0;
 }
