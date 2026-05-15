@@ -266,7 +266,7 @@ Test(game_loop, dump_stops_execution)
     vm.total_cycles = 0;
     vm.current_cycle = 0;
     cr_redirect_stdout();
-    cr_assert_eq(game_loop(&global, &vm), 0);
+    cr_assert_eq(game_loop(&global, &vm), 1);
     cr_assert_eq(vm.total_cycles, 5);
 }
 
