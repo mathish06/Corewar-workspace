@@ -758,3 +758,45 @@ Test(op_xor, valid_xor_operation)
     cr_assert_eq(proc.registers[2], 6);
     cr_assert_eq(proc.pc, 5);
 }
+
+Test(exec_fork, valid_fork_operation)
+{
+    global_t global;
+    vm_t vm;
+    process_t proc;
+
+    memset(&global, 0, sizeof(global_t));
+    memset(&vm, 0, sizeof(vm_t));
+    memset(&proc, 0, sizeof(process_t));
+    vm.process_list = &proc;
+    proc.pc = 10;
+    proc.carry = 1;
+    proc.registers[0] = 42;
+    vm.arena[11] = 0x00;
+    vm.arena[12] = 0x05;
+    exec_fork(&global, &vm, &proc);
+    cr_assert_neq(vm.process_list, &proc);
+    cr_assert_eq(vm.process_list->pc, 15);
+    cr_assert_eq(vm.process_list->carry, 1);
+    cr_assert_eq(vm.process_list->registers[0], 42);
+    cr_assert_eq(proc.pc, 13);
+}
+
+Test(exec_lfork, valid_lfork_operation)
+{
+    global_t global;
+    vm_t vm;
+    process_t proc;
+
+    memset(&global, 0, sizeof(global_t));
+    memset(&vm, 0, sizeof(vm_t));
+    memset(&proc, 0, sizeof(process_t));
+    vm.process_list = &proc;
+    proc.pc = 10;
+    vm.arena[11] = 0x0A;
+    vm.arena[12] = 0x00;
+    exec_lfork(&global, &vm, &proc);
+    cr_assert_neq(vm.process_list, &proc);
+    cr_assert_eq(vm.process_list->pc, 2570);
+    cr_assert_eq(proc.pc, 13);
+}
