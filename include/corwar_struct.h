@@ -24,6 +24,7 @@ typedef struct global_s {
     int nbr_champions;
     int temp_n;
     int temp_a;
+    int last_live_id;
 } global_t;
 
 typedef struct process_s {
