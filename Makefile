@@ -27,13 +27,15 @@ SRC     =   src/main.c 							\
 			src/core/game_loop.c				\
 			src/op.c							\
 			src/instructions/instructions_calc.c \
-			src/core/execute_processes.c
+			src/core/execute_processes.c		\
+			src/actions/basic_instructions.c
 
 
 LIB_SRC =   lib/my/my_strcmp.c					\
 			lib/my/my_getnbr.c					\
 			lib/my/my_putchar.c					\
-			lib/my/my_putstr.c
+			lib/my/my_putstr.c					\
+			lib/my/my_put_nbr.c
 
 # 3. OBJETS
 TESTS_SRC = tests/unit_tests.c

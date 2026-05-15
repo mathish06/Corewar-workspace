@@ -35,6 +35,9 @@ int corewar(int argc, char **argv);
 int game_loop(global_t *global, vm_t *vm);
 void execute_processes(global_t *global, vm_t *vm);
 
+void exec_live(global_t *global, vm_t *vm, process_t *proc);
+void exec_zjmp(global_t *global, vm_t *vm, process_t *proc);
+void exec_print(global_t *global, vm_t *vm, process_t *proc);
 
 int my_strcmp(char const *s1, char const *s2);
 int my_getnbr(char const *str);
@@ -47,5 +50,8 @@ void op_sub(global_t *global, vm_t *vm, process_t *proc);
 void op_and(global_t *global, vm_t *vm, process_t *proc);
 void op_or(global_t *global, vm_t *vm, process_t *proc);
 void op_xor(global_t *global, vm_t *vm, process_t *proc);
+void nbextremum(void);
+void isextrem(int nb);
+int my_put_nbr(int nb);
 
 #endif
