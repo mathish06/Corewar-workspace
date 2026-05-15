@@ -24,14 +24,19 @@ static void cooldown(process_t *curr)
 
 static void execution(global_t *global, vm_t *vm, process_t *curr)
 {
-    void (*actions[17])(global_t *, vm_t *, process_t *) = {NULL};
+    static void (*actions[17])(global_t *, vm_t *, process_t *) = {
+        NULL, op_live, NULL, NULL, op_add, op_sub, op_and, op_or, op_xor,
+        op_zjmp, NULL, NULL, NULL, NULL, NULL, NULL, op_print
+    };
 
     if (curr->cycle_to_wait == 0) {
         if (curr->current_opcode >= 1 && curr->current_opcode <= 16 &&
             actions[curr->current_opcode] != NULL) {
             actions[curr->current_opcode](global, vm, curr);
-        } else
+            curr->current_opcode = 0;
+        } else {
             curr->pc = (curr->pc + 1) % MEM_SIZE;
+        }
     }
 }
 
