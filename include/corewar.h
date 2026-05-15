@@ -40,6 +40,8 @@ void exec_live(global_t *global, vm_t *vm, process_t *proc);
 void exec_zjmp(global_t *global, vm_t *vm, process_t *proc);
 void exec_print(global_t *global, vm_t *vm, process_t *proc);
 
+void exec_fork(global_t *global, vm_t *vm, process_t *curr);
+
 int my_strcmp(char const *s1, char const *s2);
 int my_getnbr(char const *str);
 void decode_coding_byte(uint8_t cb, int types[4]);
