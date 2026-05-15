@@ -29,3 +29,19 @@ void exec_live(global_t *global, vm_t *vm, process_t *curr)
     }
     curr->pc = (curr->pc + 5) % MEM_SIZE;
 }
+
+void exec_zjmp(global_t *global, vm_t *vm, process_t *curr)
+{
+    short offset;
+
+    (void)global;
+    if (curr->carry == 0)
+        curr->pc = (curr->pc + 3) % MEM_SIZE;
+    if (curr->carry == 1) {
+        offset = (vm->arena[(curr->pc + 1) % MEM_SIZE] << 8)
+            | (vm->arena[(curr->pc + 2) % MEM_SIZE]);
+        curr->pc = (curr->pc + (offset % IDX_MOD)) % MEM_SIZE;
+        if (curr->pc < 0)
+            curr->pc = curr->pc + MEM_SIZE;
+    }
+}
