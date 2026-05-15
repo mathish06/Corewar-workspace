@@ -45,3 +45,18 @@ void exec_zjmp(global_t *global, vm_t *vm, process_t *curr)
             curr->pc = curr->pc + MEM_SIZE;
     }
 }
+
+void exec_print(global_t *global, vm_t *vm, process_t *curr)
+{
+    int reg_nb;
+    int reg_val;
+
+    (void)global;
+    reg_nb = vm->arena[(curr->pc + 2) % MEM_SIZE];
+    if (reg_nb >= 1 && reg_nb <= 16) {
+        reg_val = curr->registers[reg_nb - 1];
+        reg_val = reg_val % 256;
+        my_putchar(reg_val);
+    }
+    curr->pc = (curr->pc + 3) % MEM_SIZE;
+}
