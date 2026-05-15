@@ -6,6 +6,20 @@
 */
 #include "../../include/corewar.h"
 
+static void print_live_message(global_t *global, int player_nb)
+{
+    for (int i = 0; i < global->nbr_champions; i++) {
+        if (global->champions[i].prog_number == player_nb) {
+            my_putstr("The player ");
+            my_put_nbr(global->champions[i].prog_number);
+            my_putstr("(");
+            my_putstr(global->champions[i].header.prog_name);
+            my_putstr(") is alive.\n");
+            global->last_live_id = player_nb;
+        }
+    }
+}
+
 void exec_live(global_t *global, vm_t *vm, process_t *curr)
 {
     int player_nb;
@@ -17,17 +31,7 @@ void exec_live(global_t *global, vm_t *vm, process_t *curr)
         | (vm->arena[(idx + 3) % MEM_SIZE]);
     curr->is_alive = 1;
     vm->live_count += 1;
-    for (int i = 0; i < global->nbr_champions; i++) {
-        if (global->champions[i].prog_number == player_nb) {
-            my_putstr("The player ");
-            my_put_nbr(global->champions[i].prog_number);
-            my_putstr("(");
-            my_putstr(global->champions[i].header.prog_name);
-            my_putstr(")");
-            my_putstr(" is alive.\n");
-            global->last_live_id = player_nb;
-        }
-    }
+    print_live_message(global, player_nb);
     curr->pc = (curr->pc + 5) % MEM_SIZE;
 }
 
