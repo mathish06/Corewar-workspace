@@ -42,5 +42,8 @@ void decode_coding_byte(uint8_t cb, int types[4]);
 void my_putchar(char c);
 int my_putstr(char const *str);
 int parse_single_arg(char **argv, int *i, global_t *global);
+void nbextremum(int nb);
+void isextrem(int nb);
+int my_put_nbr(int nb);
 
 #endif
