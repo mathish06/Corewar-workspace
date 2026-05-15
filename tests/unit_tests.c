@@ -600,3 +600,161 @@ Test(exec_print, invalid_register_print)
     exec_print(&global, &vm, &proc);
     cr_assert_eq(proc.pc, 3);
 }
+
+Test(exec_live, updates_last_live_id)
+{
+    global_t global;
+    vm_t vm;
+    process_t proc;
+
+    memset(&global, 0, sizeof(global_t));
+    memset(&vm, 0, sizeof(vm_t));
+    memset(&proc, 0, sizeof(process_t));
+    global.nbr_champions = 1;
+    global.champions[0].prog_number = 42;
+    strcpy(global.champions[0].header.prog_name, "TestChamp");
+    global.last_live_id = 0;
+    proc.pc = 0;
+    vm.arena[1] = 0;
+    vm.arena[2] = 0;
+    vm.arena[3] = 0;
+    vm.arena[4] = 42;
+    cr_redirect_stdout();
+    exec_live(&global, &vm, &proc);
+    cr_assert_eq(global.last_live_id, 42);
+}
+
+Test(display_winner, single_champion_wins)
+{
+    global_t global;
+
+    memset(&global, 0, sizeof(global_t));
+    global.nbr_champions = 1;
+    global.champions[0].prog_number = 1;
+    strcpy(global.champions[0].header.prog_name, "ChampOne");
+    global.last_live_id = 1;
+    cr_redirect_stdout();
+    display_winner(&global);
+    cr_assert_stdout_eq_str("The player 1(ChampOne) has won.\n");
+}
+
+Test(display_winner, multiple_champions_find_winner)
+{
+    global_t global;
+
+    memset(&global, 0, sizeof(global_t));
+    global.nbr_champions = 2;
+    global.champions[0].prog_number = 42;
+    strcpy(global.champions[0].header.prog_name, "Loser");
+    global.champions[1].prog_number = 84;
+    strcpy(global.champions[1].header.prog_name, "Winner");
+    global.last_live_id = 84;
+    cr_redirect_stdout();
+    display_winner(&global);
+    cr_assert_stdout_eq_str("The player 84(Winner) has won.\n");
+}
+
+Test(op_add, valid_addition)
+{
+    global_t global;
+    vm_t vm;
+    process_t proc;
+
+    memset(&global, 0, sizeof(global_t));
+    memset(&vm, 0, sizeof(vm_t));
+    memset(&proc, 0, sizeof(process_t));
+    proc.pc = 0;
+    vm.arena[2] = 1;
+    vm.arena[3] = 2;
+    vm.arena[4] = 3;
+    proc.registers[0] = 10;
+    proc.registers[1] = 15;
+    op_add(&global, &vm, &proc);
+    cr_assert_eq(proc.registers[2], 25);
+    cr_assert_eq(proc.carry, 0);
+    cr_assert_eq(proc.pc, 5);
+}
+
+Test(op_sub, valid_subtraction_with_carry)
+{
+    global_t global;
+    vm_t vm;
+    process_t proc;
+
+    memset(&global, 0, sizeof(global_t));
+    memset(&vm, 0, sizeof(vm_t));
+    memset(&proc, 0, sizeof(process_t));
+    proc.pc = 0;
+    vm.arena[2] = 1;
+    vm.arena[3] = 2;
+    vm.arena[4] = 3;
+    proc.registers[0] = 42;
+    proc.registers[1] = 42;
+    op_sub(&global, &vm, &proc);
+    cr_assert_eq(proc.registers[2], 0);
+    cr_assert_eq(proc.carry, 1);
+    cr_assert_eq(proc.pc, 5);
+}
+
+Test(op_and, valid_and_operation)
+{
+    global_t global;
+    vm_t vm;
+    process_t proc;
+
+    memset(&global, 0, sizeof(global_t));
+    memset(&vm, 0, sizeof(vm_t));
+    memset(&proc, 0, sizeof(process_t));
+    proc.pc = 0;
+    vm.arena[1] = 0x54;
+    vm.arena[2] = 1;
+    vm.arena[3] = 2;
+    vm.arena[4] = 3;
+    proc.registers[0] = 12;
+    proc.registers[1] = 10;
+    op_and(&global, &vm, &proc);
+    cr_assert_eq(proc.registers[2], 8);
+    cr_assert_eq(proc.pc, 5);
+}
+
+Test(op_or, valid_or_operation)
+{
+    global_t global;
+    vm_t vm;
+    process_t proc;
+
+    memset(&global, 0, sizeof(global_t));
+    memset(&vm, 0, sizeof(vm_t));
+    memset(&proc, 0, sizeof(process_t));
+    proc.pc = 0;
+    vm.arena[1] = 0x54;
+    vm.arena[2] = 1;
+    vm.arena[3] = 2;
+    vm.arena[4] = 3;
+    proc.registers[0] = 12;
+    proc.registers[1] = 10;
+    op_or(&global, &vm, &proc);
+    cr_assert_eq(proc.registers[2], 14);
+    cr_assert_eq(proc.pc, 5);
+}
+
+Test(op_xor, valid_xor_operation)
+{
+    global_t global;
+    vm_t vm;
+    process_t proc;
+
+    memset(&global, 0, sizeof(global_t));
+    memset(&vm, 0, sizeof(vm_t));
+    memset(&proc, 0, sizeof(process_t));
+    proc.pc = 0;
+    vm.arena[1] = 0x54;
+    vm.arena[2] = 1;
+    vm.arena[3] = 2;
+    vm.arena[4] = 3;
+    proc.registers[0] = 12;
+    proc.registers[1] = 10;
+    op_xor(&global, &vm, &proc);
+    cr_assert_eq(proc.registers[2], 6);
+    cr_assert_eq(proc.pc, 5);
+}
