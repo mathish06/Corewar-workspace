@@ -563,3 +563,40 @@ Test(exec_zjmp, carry_one_negative_jump)
     exec_zjmp(&global, &vm, &proc);
     cr_assert_eq(proc.pc, MEM_SIZE - 5);
 }
+
+Test(exec_print, valid_register_print)
+{
+    global_t global;
+    vm_t vm;
+    process_t proc;
+
+    memset(&global, 0, sizeof(global_t));
+    memset(&vm, 0, sizeof(vm_t));
+    memset(&proc, 0, sizeof(process_t));
+    proc.pc = 0;
+    vm.arena[0] = 16;
+    vm.arena[1] = 0x40;
+    vm.arena[2] = 2;
+    proc.registers[1] = 65;
+    cr_redirect_stdout();
+    exec_print(&global, &vm, &proc);
+    cr_assert_stdout_eq_str("A");
+    cr_assert_eq(proc.pc, 3);
+}
+
+Test(exec_print, invalid_register_print)
+{
+    global_t global;
+    vm_t vm;
+    process_t proc;
+
+    memset(&global, 0, sizeof(global_t));
+    memset(&vm, 0, sizeof(vm_t));
+    memset(&proc, 0, sizeof(process_t));
+    proc.pc = 0;
+    vm.arena[0] = 16;
+    vm.arena[1] = 0x40;
+    vm.arena[2] = 42;
+    exec_print(&global, &vm, &proc);
+    cr_assert_eq(proc.pc, 3);
+}
