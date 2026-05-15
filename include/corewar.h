@@ -37,6 +37,7 @@ void execute_processes(global_t *global, vm_t *vm);
 
 void exec_live(global_t *global, vm_t *vm, process_t *curr);
 void exec_zjmp(global_t *global, vm_t *vm, process_t *curr);
+void exec_print(global_t *global, vm_t *vm, process_t *curr);
 
 
 int my_strcmp(char const *s1, char const *s2);
