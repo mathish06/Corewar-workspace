@@ -24,7 +24,12 @@ static void cooldown(process_t *curr)
 
 static void execution(global_t *global, vm_t *vm, process_t *curr)
 {
-    void (*actions[17])(global_t *, vm_t *, process_t *) = {NULL};
+    void (*actions[17])(global_t *, vm_t *, process_t *) = {
+        NULL, exec_live, NULL, NULL, NULL,
+        NULL, NULL, NULL, NULL, exec_zjmp,
+        NULL, NULL, NULL, NULL, NULL,
+        NULL, exec_print
+    };
 
     if (curr->cycle_to_wait == 0) {
         if (curr->current_opcode >= 1 && curr->current_opcode <= 16 &&
