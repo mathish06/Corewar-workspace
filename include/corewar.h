@@ -42,5 +42,10 @@ void decode_coding_byte(uint8_t cb, int types[4]);
 void my_putchar(char c);
 int my_putstr(char const *str);
 int parse_single_arg(char **argv, int *i, global_t *global);
+void op_add(global_t *global, vm_t *vm, process_t *proc);
+void op_sub(global_t *global, vm_t *vm, process_t *proc);
+void op_and(global_t *global, vm_t *vm, process_t *proc);
+void op_or(global_t *global, vm_t *vm, process_t *proc);
+void op_xor(global_t *global, vm_t *vm, process_t *proc);
 
 #endif
