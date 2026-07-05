@@ -1,5 +1,35 @@
+# ── Compiled objects & binaries ──────────────────────────────────────────────
 *.o
+*.a
+
+# Corewar binary
+corewar
+
+# Compiled champion files (keep sources only)
 *.cor
+
+# Test binary
 unit_tests
+
+# ── Coverage ──────────────────────────────────────────────────────────────────
 *.gcda
 *.gcno
+coverage.html
+coverage*.html
+
+# ── Valgrind ──────────────────────────────────────────────────────────────────
+vgcore.*
+
+# ── Editor & OS ───────────────────────────────────────────────────────────────
+*~
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ── Archives ──────────────────────────────────────────────────────────────────
+*.zip
+*.tar.gz
+*.tar.bz2
