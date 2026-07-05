@@ -173,7 +173,7 @@ Several pre-compiled `.cor` champion files are provided to test the VM:
 Developed as part of the **Epitech** curriculum (CPE-200 — Core War project).
 
 - **mathish06** — [@mathish06](https://github.com/mathish06)
-- **LoanBesse**
+- **LoanBesse** — [@LoanBesse](https://github.com/LoanBesse)
 
 ---
 
